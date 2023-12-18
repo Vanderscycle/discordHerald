@@ -8,6 +8,7 @@ import (
 	"syscall"
 
 	"github.com/bwmarrin/discordgo"
+	"github.com/joho/godotenv"
 )
 
 // Variables used for command line parameters
@@ -15,6 +16,12 @@ var (
 	Token string
 )
 
+func envSource() {
+	err := godotenv.Load()
+	if err != nil {
+		fmt.Print("Error loading .env file")
+	}
+}
 func init() {
 
 	flag.StringVar(&Token, "t", "", "Bot Token")
@@ -22,6 +29,8 @@ func init() {
 }
 
 func main() {
+	envSource()
+	Token = os.Getenv(("DISCORD_TOKEN"))
 
 	// Create a new Discord session using the provided bot token.
 	dg, err := discordgo.New("Bot " + Token)

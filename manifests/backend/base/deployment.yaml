@@ -1,0 +1,32 @@
+# https://kubernetes.io/docs/concepts/workloads/controllers/deployment/
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gofiber-backend
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+  template:
+    spec:
+      containers:
+        - name: gofiber-backend
+          image: vandercycle/3d-printer-exchange-backend
+          envFrom:
+            - configMapRef:
+                name: gofiber-backend-cm
+          env:
+            - name: DATABASE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: gofiber-secret
+                  key: DATABASE_PASSWORD
+          resources:
+            requests:
+              cpu: 300m
+              memory: 256Mi
+            limits:
+              memory: 256Mi
+          ports:
+            - name: http
+              containerPort: 8080
